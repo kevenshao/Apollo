@@ -1,6 +1,7 @@
 package com.kevens.apollo;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,9 +13,12 @@ import com.kevens.apollo.data.service.ApiService;
 import com.kevens.basic.data.http.ApolloSubscriber;
 import com.kevens.basic.data.http.HttpClient;
 import com.kevens.basic.data.model.ApiException;
+import com.kevens.basic.data.model.RequestBodyProgress;
 import com.kevens.basic.data.model.ResponseData;
 
 import org.json.JSONException;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,7 +63,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ApiService apiService = HttpClient.getIns(ApiService.WEB_API_BASE).createService(ApiService.class);
 
-        apiService.getMethod("kevensh")
+        File file = new File(Environment.getExternalStorageDirectory()+"/bbb.png");
+        RequestBodyProgress requestBody = new RequestBodyProgress(file, uploadLister);
+        apiService.uploadFile(file.getName(), requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ApolloSubscriber<ResponseData<Object>>() {
@@ -80,12 +86,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onNext(ResponseData<Object> responseData) {
-                        try {
-                            Log.e("kevens", "response = " + responseData.getDataJsonObj().getString("name") +
-                                    " age=" + responseData.getDataJsonObj().getInt("age"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Log.i("kevens", "onNext");
+//                        try {
+//                            Log.e("kevens", "response = " + responseData.getDataJsonObj().getString("name") +
+//                                    " age=" + responseData.getDataJsonObj().getInt("age"));
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                     @Override
@@ -123,4 +130,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
     }
+
+    RequestBodyProgress.UploadCallbacks uploadLister = new RequestBodyProgress.UploadCallbacks() {
+        @Override
+        public void onProgressUpdate(int percentage) {
+            Log.i("kevens", "Upload percentage = " + percentage);
+        }
+    };
 }

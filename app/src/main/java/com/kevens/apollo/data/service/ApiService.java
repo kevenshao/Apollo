@@ -27,8 +27,6 @@ public interface ApiService {
     public static String WEB_API_BASE = "http://kevens.wicp.net/history/Home/";
 
 
-//    @GET("Mobile/getMethod")
-//    Call<ResponseData<Object>> getMethod(@Query("name") String name);
     @GET("Mobile/getMethod")
     Observable<ResponseData<Object>> getMethod(@Query("name") String name);
 
@@ -45,7 +43,7 @@ public interface ApiService {
 
     @Multipart
     @POST("Mobile/uploadFile")
-    Call<ResponseBody> uploadFile(
+    Observable<ResponseData<Object>> uploadFile(
             @Part("file_name") String file_name,
             @Part("file") RequestBody description);
 }
