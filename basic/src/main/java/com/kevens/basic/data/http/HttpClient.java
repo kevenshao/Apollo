@@ -37,6 +37,7 @@ public class HttpClient {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(30000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                .addInterceptor(new LoggingInterceptor())
                 .addNetworkInterceptor(new HttpCacheInterceptor())
                 .cache(cache)
                 .build();

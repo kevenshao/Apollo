@@ -92,8 +92,10 @@ public abstract class ApolloSubscriber<T> extends Subscriber<T> {
         } else { //其它错误
             //[无网络时] java.net.UnknownHostException
             //[timeout] java.net.SocketTimeoutException
+            //java.net.SocketException: sendto failed: EPIPE (Broken pipe)
+            //[服务器关闭时]java.io.IOException: unexpected end of stream on okhttp3.Address@723f31b2
             Log.e("kevens", "other error:" + e.toString());
-            ex = new ApiException(e, ApiException.UNKNOWN);
+            ex = new ApiException(e, ApiException.UNKNOWN_ERROR);
             ex.setDisplayMessage(unknownMsg);
             onError(ex);
         }

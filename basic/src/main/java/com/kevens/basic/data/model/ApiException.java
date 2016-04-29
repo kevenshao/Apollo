@@ -8,7 +8,7 @@ public class ApiException extends Exception {
     private final int code;
     private String displayMessage;
 
-    public static final int UNKNOWN = 1000;
+    public static final int UNKNOWN_ERROR = 1000;
     public static final int PARSE_ERROR = 1001;
 
     public ApiException(Throwable throwable, int code) {

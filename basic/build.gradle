@@ -30,4 +30,5 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
 
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.github.orhanobut:logger:1.12'
 }

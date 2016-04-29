@@ -54,11 +54,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_request:
                 doRequest();
+                //uploadImage();
                 break;
         }
     }
 
     private void doRequest() {
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        ApiService apiService = HttpClient.getIns(ApiService.WEB_API_BASE).createService(ApiService.class);
+
+        apiService.getMethod("kevensha")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ApolloSubscriber<ResponseData<Object>>() {
+                    @Override
+                    protected void onError(ApiException ex) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    protected void onPermissionError(ApiException ex) {
+
+                    }
+
+                    @Override
+                    protected void onResultError(ApiException ex) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(ResponseData<Object> responseData) {
+                        try {
+                            Log.e("kevens", "response = " + responseData.getDataJsonObj().getString("name") +
+                                    " age=" + responseData.getDataJsonObj().getInt("age"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void uploadImage() {
         mProgressBar.setVisibility(View.VISIBLE);
 
         ApiService apiService = HttpClient.getIns(ApiService.WEB_API_BASE).createService(ApiService.class);
@@ -86,13 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onNext(ResponseData<Object> responseData) {
-                        Log.i("kevens", "onNext");
-//                        try {
-//                            Log.e("kevens", "response = " + responseData.getDataJsonObj().getString("name") +
-//                                    " age=" + responseData.getDataJsonObj().getInt("age"));
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
+                        Log.i("kevens", "onNext:upload success");
                     }
 
                     @Override
@@ -100,35 +136,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         mProgressBar.setVisibility(View.GONE);
                     }
                 });
-
-
-//        Call<ResponseData<Object>> call = apiService.getMethod("kevenshao");
-//        call.enqueue(new Callback<ResponseData<Object>>() {
-//            @Override
-//            public void onResponse(Call<ResponseData<Object>> call1, Response<ResponseData<Object>> response) {
-//                mProgressBar.setVisibility(View.GONE);
-//                if (response.isSuccessful()) {
-//                    try {
-//                        Log.e("kevens", "response = " + response.body().getDataJsonObj().getString("name") +
-//                                " age=" + response.body().getDataJsonObj().getInt("age"));
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    // 404 - 找不到对应的接口
-//                    Log.e("kevens", "failed:" + response.code());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseData<Object>> call1,Throwable t) {
-//                //[无网络时]
-//                //java.net.UnknownHostException: Unable to resolve host "kevens.wicp.net": No address associated with hostname
-//                Log.e("kevens", "failure=" + t.toString());
-//                mProgressBar.setVisibility(View.GONE);
-//                mText.setText(t.getMessage());
-//            }
-//        });
     }
 
     RequestBodyProgress.UploadCallbacks uploadLister = new RequestBodyProgress.UploadCallbacks() {

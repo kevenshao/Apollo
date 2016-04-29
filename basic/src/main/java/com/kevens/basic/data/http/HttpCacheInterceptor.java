@@ -14,6 +14,9 @@ import okhttp3.Response;
 
 /**
  * author kevens
+ *
+ * Dangerous interceptor that rewrites the server's cache-control header.
+ * https://github.com/square/okhttp/wiki/Interceptors
  */
 public class HttpCacheInterceptor implements Interceptor {
 
@@ -33,12 +36,10 @@ public class HttpCacheInterceptor implements Interceptor {
             String cacheControl = request.cacheControl().toString();
             return originalResponse.newBuilder()
                     .header("Cache-Control", cacheControl)
-                    .removeHeader("Pragma")
                     .build();
         } else {
             return originalResponse.newBuilder()
                     .header("Cache-Control", "public, only-if-cached, max-stale=2419200")
-                    .removeHeader("Pragma")
                     .build();
         }
     }
