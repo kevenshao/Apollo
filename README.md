@@ -5,6 +5,7 @@ The project use and encapsulate the third popular libs.
 1. Retrofit - encapsulate to use better.
 2. Rxjava
 3. butterknife
+4. orhanobut:logger
 
 This project only start initial phase and will continue rich it. 
 If you have more excellent solution, please propose it. We together improve it.
